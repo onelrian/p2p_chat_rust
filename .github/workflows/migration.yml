@@ -1,0 +1,20 @@
+name: Run Database Migrations
+
+on: [push]
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install PostgreSQL
+        run: sudo apt-get install -y postgresql-client
+
+      - name: Run migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          cargo install diesel_cli --no-default-features --features postgres
+          diesel migration run
